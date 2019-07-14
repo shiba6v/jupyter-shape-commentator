@@ -8,6 +8,6 @@ jupyter nbextension install https://github.com/shiba6v/jupyter-shape-commentator
 
 ## Installation for Development
 ```
-cd /path/to
-jupyter nbextension install . --user
+cd /path/to/jupyter-shape-commentator
+jupyter nbextension install ../jupyter-shape-commentator --user
 ```

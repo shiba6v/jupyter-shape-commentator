@@ -1,30 +1,18 @@
 define([
     'base/js/namespace',
+    'base/js/events',
     ],
-    function (Jupyter) {
+    function (Jupyter,events) {
         "use strict";
         function shape_comment(){
-            var parent = document.getElementsByClassName("end_space")[0];
-            while (parent.firstChild) {
-                parent.removeChild(parent.firstChild);
-            }
-            var cell = Jupyter.notebook.get_selected_cell();
-            var orig_text = cell.get_text();
-            cell.set_text("%%shape_comment"+"\\n"+orig_text);
-            cell.execute();
-        }
-
-        function shape_erase(){
-            // var parent = document.getElementsByClassName("end_space")[0];
-            // while (parent.firstChild) {
-            //     parent.removeChild(parent.firstChild);
-            // }
-            // var cell = Jupyter.notebook.get_selected_cell();
-            // var orig_text = cell.get_text();
-            // cell.set_text("%%shape_erase"+"\\n"+orig_text);
-            // cell.execute();
+            console.log("Calling shape_comment");
             var output_callback = function (out_data){
                 console.log(out_data);
+                var data = out_data.content.data["text/plain"];
+                // delete unused quotation
+                data = data.slice(1,-1);
+                data = data.replace(/\\n/g,"\n");
+                cell.set_text(unescape(data));
             };
             var callbacks = {
                 iopub: {
@@ -33,15 +21,38 @@ define([
             }
             var options = {
                 silent: false,
-                store_history : true,
-                stop_on_error: false
             };
-            cell.notebook.kernel.execute(code, callbacks, options);
+            var cell = Jupyter.notebook.get_selected_cell();
+            var code = cell.get_text();
+            cell.notebook.kernel.execute("%%shape_comment"+"\n"+code, callbacks, options);
         }
+
+        function shape_erase(){
+            console.log("Calling shape_erase");
+            var cell = Jupyter.notebook.get_selected_cell();
+            var output_callback = function (out_data){
+                console.log(out_data);
+                var data = out_data.content.data["text/plain"];
+                // delete unused quotation
+                data = data.slice(1,-1);
+                data = data.replace(/\\n/g,"\n");
+                cell.set_text(unescape(data));
+            };
+            var callbacks = {
+                iopub: {
+                    output: output_callback
+                }
+            }
+            var options = {
+                silent: false,
+            };
+            var code = cell.get_text();
+            cell.notebook.kernel.execute("%%shape_erase"+"\n"+code, callbacks, options);
+        }
+
         function load_ipython_extension() {
-            // if (document.getElementById('shape_commentator_button')!=null){
-            //     document.getElementById('shape_commentator_button').remove();
-            // }
+            console.log("Calling load_ipython_extension");
+
             if (document.getElementById('shape_commentator_button')==null) {
                 Jupyter.toolbar.add_buttons_group([{
                     'label': 'Shape',
@@ -51,9 +62,6 @@ define([
                 }]);
             }
 
-            // if (document.getElementById('shape_commentator_erase_button')!=null){
-            //     document.getElementById('shape_commentator_erase_button').remove();
-            // }
             if (document.getElementById('shape_commentator_erase_button')==null) {
                 Jupyter.toolbar.add_buttons_group([{
                     'label': 'Shape',
@@ -62,9 +70,33 @@ define([
                     'id': 'shape_commentator_erase_button'
                 }]);
             }
+
+            function import_shape_commentator(){
+                var options = {
+                    silent: false,
+                    store_history : false,
+                    stop_on_error: false
+                };
+                console.log("Calling import_shape_commentator");
+            var cell = Jupyter.notebook.get_selected_cell();
+            cell.notebook.kernel.execute("import shape_commentator.jupyter_ext", {}, options);
+            }
+
+            events.on("kernel_ready.Kernel", function () {
+                if (Jupyter.notebook !== undefined && Jupyter.notebook._fully_loaded) {
+                    import_shape_commentator();
+                } else {
+                    events.on("notebook_loaded.Notebook", function () {
+                        import_shape_commentator();
+                    })
+                }
+            });
         }
+
         return {
             load_ipython_extension: load_ipython_extension
         };
     }
 );
+
+console.log("Loading Jupyter Shape Commentator");
