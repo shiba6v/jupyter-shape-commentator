@@ -8,6 +8,7 @@ define([
             console.log("Calling shape_comment");
             var output_callback = function (out_data){
                 console.log(out_data);
+                // TODO on_error
                 var data = out_data.content.data["text/plain"];
                 // delete unused quotation
                 data = data.slice(1,-1);
@@ -21,6 +22,8 @@ define([
             }
             var options = {
                 silent: false,
+                store_history : false,
+                stop_on_error: false
             };
             var cell = Jupyter.notebook.get_selected_cell();
             var code = cell.get_text();
@@ -32,6 +35,7 @@ define([
             var cell = Jupyter.notebook.get_selected_cell();
             var output_callback = function (out_data){
                 console.log(out_data);
+                // TODO on_error
                 var data = out_data.content.data["text/plain"];
                 // delete unused quotation
                 data = data.slice(1,-1);
@@ -45,6 +49,8 @@ define([
             }
             var options = {
                 silent: false,
+                store_history : false,
+                stop_on_error: false
             };
             var code = cell.get_text();
             cell.notebook.kernel.execute("%%shape_erase"+"\n"+code, callbacks, options);
