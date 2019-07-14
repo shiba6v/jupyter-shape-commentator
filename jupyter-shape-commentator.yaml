@@ -3,3 +3,4 @@ Name: Jupyter Shape Commentator
 Description: You can add shape comments to your code.
 Link: README.md
 Main: jupyter-shape-commentator.js
+Compatibility: 4.x, 5.x

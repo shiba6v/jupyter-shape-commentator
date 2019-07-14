@@ -15,14 +15,28 @@ define([
         }
 
         function shape_erase(){
-            var parent = document.getElementsByClassName("end_space")[0];
-            while (parent.firstChild) {
-                parent.removeChild(parent.firstChild);
+            // var parent = document.getElementsByClassName("end_space")[0];
+            // while (parent.firstChild) {
+            //     parent.removeChild(parent.firstChild);
+            // }
+            // var cell = Jupyter.notebook.get_selected_cell();
+            // var orig_text = cell.get_text();
+            // cell.set_text("%%shape_erase"+"\\n"+orig_text);
+            // cell.execute();
+            var output_callback = function (out_data){
+                console.log(out_data);
+            };
+            var callbacks = {
+                iopub: {
+                    output: output_callback
+                }
             }
-            var cell = Jupyter.notebook.get_selected_cell();
-            var orig_text = cell.get_text();
-            cell.set_text("%%shape_erase"+"\\n"+orig_text);
-            cell.execute();
+            var options = {
+                silent: false,
+                store_history : true,
+                stop_on_error: false
+            };
+            cell.notebook.kernel.execute(code, callbacks, options);
         }
         function load_ipython_extension() {
             // if (document.getElementById('shape_commentator_button')!=null){
