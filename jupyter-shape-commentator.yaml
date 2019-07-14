@@ -1,0 +1,5 @@
+Type: IPython Notebook Extension
+Name: Jupyter Shape Commentator
+Description: You can add shape comments to your code.
+Link: README.md
+Main: jupyter-shape-commentator.js
