@@ -1,5 +1,6 @@
 ## Installation
 ```
+pip install shape_commentator
 jupyter nbextension install https://github.com/shiba6v/jupyter-shape-commentator/archive/master.zip --user
 ```
 
@@ -13,6 +14,8 @@ Then, enable "Jupyter Shape Commentator" at Nbextensions tab in the notebook.
 
 ![use_fig](https://user-images.githubusercontent.com/13820488/61187795-fcf6d300-a6b0-11e9-97c6-4fd029244839.png)
 
+## Other
+[ShapeCommentator](https://github.com/shiba6v/shape_commentator)
 
 ## Installation for Development
 ```
