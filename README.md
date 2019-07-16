@@ -3,7 +3,8 @@ This is a Jupyter Notebook NBExtension of [ShapeCommentator](https://github.com/
 
 ## Installation
 ```
-pip install shape_commentator
+# Install shape_commentator 0.6.0 or later
+pip install -U shape_commentator
 jupyter nbextension install https://github.com/shiba6v/jupyter-shape-commentator/archive/master.zip --user
 ```
 
