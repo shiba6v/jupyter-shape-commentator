@@ -84,8 +84,8 @@ define([
                     stop_on_error: false
                 };
                 console.log("Calling import_shape_commentator");
-            var cell = Jupyter.notebook.get_selected_cell();
-            cell.notebook.kernel.execute("import shape_commentator.jupyter_ext", {}, options);
+                var cell = Jupyter.notebook.get_selected_cell();
+                cell.execute("import shape_commentator.jupyter_ext", {}, options);
             }
 
             events.on("kernel_ready.Kernel", function () {
