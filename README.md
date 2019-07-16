@@ -1,3 +1,6 @@
+## About
+This is a Jupyter Notebook NBExtension of [ShapeCommentator](https://github.com/shiba6v/shape_commentator)
+
 ## Installation
 ```
 pip install shape_commentator
