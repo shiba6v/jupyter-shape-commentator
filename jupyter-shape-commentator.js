@@ -8,9 +8,7 @@ define([
             var callback_result = cell.get_callbacks();
             callback_result.iopub.output = function() { 
                 var that = cell;
-                // ================================
-                console.log(arguments);
-                // TODO on_error
+                // console.log(arguments);
                 var data = arguments[0].content.data;
                 // If it is NOT shape commentator result (e.g. stdio output), skip.
                 if (data===undefined){
@@ -19,11 +17,9 @@ define([
                     return;
                 }
                 data = data["text/plain"];
-                // delete unused quotation
                 data = data.slice(1,-1);
                 data = data.replace(/\\n/g,"\n");
                 cell.set_text(unescape(data));
-                // ================================
             }
             var tmp_get_callbacks = cell.get_callbacks;
             cell.get_callbacks = function(){
@@ -39,19 +35,19 @@ define([
         }
 
         function shape_comment(){
-            console.log("Calling shape_comment");
+            // console.log("Calling shape_comment");
             var cell = Jupyter.notebook.get_selected_cell();
             rewrite_with_cellmagic(cell, "shape_comment");
         }
 
         function shape_erase(){
-            console.log("Calling shape_erase");
+            // console.log("Calling shape_erase");
             var cell = Jupyter.notebook.get_selected_cell();
             rewrite_with_cellmagic(cell, "shape_erase");
         }
 
         function load_ipython_extension() {
-            console.log("Calling load_ipython_extension");
+            // console.log("Calling load_ipython_extension");
 
             if (document.getElementById('shape_commentator_button')==null) {
                 Jupyter.toolbar.add_buttons_group([{
