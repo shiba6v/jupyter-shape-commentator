@@ -4,56 +4,50 @@ define([
     ],
     function (Jupyter,events) {
         "use strict";
-        function shape_comment(){
-            console.log("Calling shape_comment");
-            var output_callback = function (out_data){
-                console.log(out_data);
+        function rewrite_with_cellmagic(cell, cellmagic){
+            var tmp_get_callbacks = cell.get_callbacks
+            var callback_result = cell.get_callbacks();
+            callback_result.iopub.output = function() { 
+                var that = cell;
+                // ================================
+                console.log(arguments);
                 // TODO on_error
-                var data = out_data.content.data["text/plain"];
+                var data = arguments[0].content.data;
+                // If it is NOT shape commentator result (e.g. stdio output), skip.
+                if (data===undefined){
+                    that.events.trigger('set_dirty.Notebook', {value: true});
+                    that.output_area.handle_output.apply(that.output_area, arguments);
+                    return;
+                }
+                data = data["text/plain"];
                 // delete unused quotation
                 data = data.slice(1,-1);
                 data = data.replace(/\\n/g,"\n");
                 cell.set_text(unescape(data));
-            };
-            var callbacks = {
-                iopub: {
-                    output: output_callback
-                }
+                // ================================
+            }, 
+            cell.get_callbacks = function(){
+                return callback_result;
             }
-            var options = {
-                silent: false,
-                store_history : false,
-                stop_on_error: false
+            var tmp_get_text = cell.get_text;
+            cell.get_text = function () {
+                return "%%"+cellmagic+"\n"+this.code_mirror.getValue();
             };
+            cell.execute();
+            cell.get_text = tmp_get_text;
+            cell.get_callbacks = tmp_get_callbacks;
+        }
+
+        function shape_comment(){
+            console.log("Calling shape_comment");
             var cell = Jupyter.notebook.get_selected_cell();
-            var code = cell.get_text();
-            cell.notebook.kernel.execute("%%shape_comment"+"\n"+code, callbacks, options);
+            rewrite_with_cellmagic(cell, "shape_comment");
         }
 
         function shape_erase(){
             console.log("Calling shape_erase");
             var cell = Jupyter.notebook.get_selected_cell();
-            var output_callback = function (out_data){
-                console.log(out_data);
-                // TODO on_error
-                var data = out_data.content.data["text/plain"];
-                // delete unused quotation
-                data = data.slice(1,-1);
-                data = data.replace(/\\n/g,"\n");
-                cell.set_text(unescape(data));
-            };
-            var callbacks = {
-                iopub: {
-                    output: output_callback
-                }
-            }
-            var options = {
-                silent: false,
-                store_history : false,
-                stop_on_error: false
-            };
-            var code = cell.get_text();
-            cell.notebook.kernel.execute("%%shape_erase"+"\n"+code, callbacks, options);
+            rewrite_with_cellmagic(cell, "shape_erase");
         }
 
         function load_ipython_extension() {
@@ -85,7 +79,12 @@ define([
                 };
                 console.log("Calling import_shape_commentator");
                 var cell = Jupyter.notebook.get_selected_cell();
-                cell.execute("import shape_commentator.jupyter_ext", {}, options);
+                var tmp_get_text = cell.get_text;
+                cell.get_text = function () {
+                    return "import shape_commentator.jupyter_ext";
+                };
+                cell.execute();
+                cell.get_text = tmp_get_text;
             }
 
             events.on("kernel_ready.Kernel", function () {
