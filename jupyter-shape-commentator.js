@@ -5,7 +5,6 @@ define([
     function (Jupyter,events) {
         "use strict";
         function rewrite_with_cellmagic(cell, cellmagic){
-            var tmp_get_callbacks = cell.get_callbacks
             var callback_result = cell.get_callbacks();
             callback_result.iopub.output = function() { 
                 var that = cell;
@@ -25,7 +24,8 @@ define([
                 data = data.replace(/\\n/g,"\n");
                 cell.set_text(unescape(data));
                 // ================================
-            }, 
+            }
+            var tmp_get_callbacks = cell.get_callbacks;
             cell.get_callbacks = function(){
                 return callback_result;
             }
