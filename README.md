@@ -4,8 +4,7 @@ This is a Jupyter Notebook NBExtension of [ShapeCommentator](https://github.com/
 ![sample](https://user-images.githubusercontent.com/13820488/62421463-0cc86c80-b6dd-11e9-84bb-44749d6078f3.gif)
 
 ## Supported Python Version
-- 3.4.3
-- 3.6.6
+- Python 3.x
 
 Python 2.x is not supported.
 
