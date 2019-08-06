@@ -27,6 +27,10 @@ define([
             }
             var tmp_get_text = cell.get_text;
             cell.get_text = function () {
+                return "shape_commentator.jupyter_ext.ENV_GLOBALS = globals()";
+            };
+            cell.execute();
+            cell.get_text = function () {
                 return "%%"+cellmagic+"\n"+this.code_mirror.getValue();
             };
             cell.execute();

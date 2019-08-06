@@ -10,7 +10,7 @@ Python 2.x is not supported.
 
 ## Installation
 ```
-# Install shape_commentator 0.6.1 or later
+# Install shape_commentator 0.6.2 or later
 pip install -U shape_commentator
 jupyter nbextension install https://github.com/shiba6v/jupyter-shape-commentator/archive/master.zip --user
 ```
